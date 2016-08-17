@@ -86,6 +86,7 @@ if ( $USER->instructor ) {
 // View
 $OUTPUT->header();
 $OUTPUT->bodyStart();
+$OUTPUT->topNav();
 $OUTPUT->flashMessages();
 
 if ( $USER->instructor ) {
