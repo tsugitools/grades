@@ -1,6 +1,7 @@
 <?php
 require_once "../config.php";
 
+use \Tsugi\Util\U;
 use \Tsugi\UI\Table;
 use \Tsugi\Core\LTIX;
 use \Tsugi\Core\User;
@@ -27,7 +28,7 @@ if ( $USER->instructor && $link_id > 0 ) {
     $link_info = Link::loadLinkInfo($link_id);
 }
 
-if ( $USER->instructor && isset($_GET['viewall'] ) ) {
+if ( $USER->instructor && isset($_GET['viewall']) && !isset($_GET['user_id']) ) {
     $query_parms = array(":CID" => $CONTEXT->id);
     $orderfields = array("R.user_id", "displayname", "email", "user_key", "grade_count");
     $searchfields = array("R.user_id", "displayname", "email", "user_key");
@@ -154,9 +155,9 @@ if ( $user_sql !== false ) {
             // $row['server_grade'].' '.$row['sourcedid'].' '.$row['service'];
 
         $RETRIEVE_INTERVAL = 14400; // Four Hours
-        $newnote['note'] = " "+$diff;
+        $newnote['note'] = " ".$diff;
 
-        $remote_grade = $row['result_url'] != null || ($row['sourcedid'] != null && $row['service_url'] != null);
+        $remote_grade = U::get($row,'result_url') || (U::get($row,'sourcedid') && U::get($row,'service_url'));
 
         if ( $remote_grade && ( !isset($row['retrieved_at']) || $row['retrieved_at'] < $row['updated_at'] ||
             $diff > $RETRIEVE_INTERVAL ) ) {
@@ -171,7 +172,7 @@ if ( $user_sql !== false ) {
 
                 echo("Problem Retrieving Grade: ".session_safe_id()." ".$msg);
                 error_log("Problem Retrieving Grade: ".session_id()."\n".$msg."\n".
-                  "service=".$row['service']." sourcedid=".$row['sourcedid']);
+                  "service=".U::get(row,'service')." sourcedid=".U::get($row,'sourcedid'));
 
                 echo("\nProblem Retrieving Grade - Please take a screen shot of this page.\n");
                 echo("</pre>\n");
@@ -209,7 +210,7 @@ if ( $user_sql !== false ) {
 
                 echo("Problem Updating Grade: ".session_safe_id()." ".$msg);
                 error_log("Problem Updating Grade: ".session_id()."\n".$msg."\n".
-                  "service=".$row['service']." sourcedid=".$row['sourcedid']);
+                  "service=".U::get(row,'service')." sourcedid=".U::get($row,'sourcedid'));
 
 
                 echo("\nProblem Retrieving Grade - Please take a screen shot of this page.\n");
