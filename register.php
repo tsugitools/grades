@@ -8,6 +8,7 @@ $REGISTER_LTI2 = array(
 a course across all the LTI tools on this server.  
 This tool also provides simple grade review and maintenance tools for instructors.",
 "privacy_level" => "public",  // anonymous, name_only, public
+    "messages" => array("launch"),
     "license" => "Apache",
     "languages" => array(
         "English"
