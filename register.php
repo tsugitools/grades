@@ -14,8 +14,9 @@ This tool also provides simple grade review and maintenance tools for instructor
         "English"
     ),
     "source_url" => "https://github.com/tsugitools/grade",
+    // For now Tsugi tools delegate this to /lti/store
     "placements" => array(
-        "course_navigation"
+        "course_navigation"  // Would be nice if this happenned :)
         /*
         "course_navigation", "homework_submission",
         "course_home_submission", "editor_button",
