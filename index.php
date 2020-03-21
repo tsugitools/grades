@@ -84,39 +84,29 @@ if ( $USER->instructor ) {
     );
     $links = $lstmt->fetchAll();
 }
+
+$menu = false;
+if ( $USER->instructor ) {
+    $menu = new \Tsugi\UI\MenuSet();
+    if ( U::get($_GET,'viewall') ) {
+        $menu->addLeft(__('View My Grades'), 'index.php');
+    } else {
+        $menu->addLeft(__('View Student Detail'), 'index.php?viewall=yes');
+    }
+    if ( $links !== false && count($links) > 0 ) {
+        $submenu = new \Tsugi\UI\Menu();
+        foreach($links as $link) {
+            $submenu->addLink($link['title'], 'index.php?link_id='.$link['link_id']);
+        }
+        $menu->addRight(__('Activity Detail'), $submenu);
+    }
+}
+
 // View
 $OUTPUT->header();
 $OUTPUT->bodyStart();
-$OUTPUT->topNav();
+$OUTPUT->topNav($menu);
 $OUTPUT->flashMessages();
-
-if ( $USER->instructor ) {
-?>
-  <a href="index.php?viewall=yes" class="btn btn-default">Class Summary</a>
-  <a href="index.php" class="btn btn-default">My Grades</a>
-<?php
-if ( $links !== false && count($links) > 0 ) {
-?>
-  <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-      Activities
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-<?php
-    foreach($links as $link) {
-        echo('<li><a href="#" onclick="window.location=\'');
-        echo(addSession('index.php?link_id='.$link['link_id']).'\';">');
-        echo(htmlent_utf8($link['title']));
-        echo("</a></li>\n");
-    }
-?>
-    </ul>
-  </div>
-<?php } ?>
-<p></p>
-<?php
-}
 
 echo("<p>Class: ".$CONTEXT->title."</p>\n");
 
