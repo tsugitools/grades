@@ -18,6 +18,9 @@ $user_sql = false;
 $class_sql = false;
 $summary_sql = false;
 
+$grade_url = U::reconstruct_query('grades.php', array("detail" => ""));
+$index_url = U::reconstruct_query('index.php', array("force" => ""));
+
 if ( U::get($_GET, 'detail') == 'yes') {
     unset($_GET['search_text']);
     unset($_GET['order_by']);
@@ -46,12 +49,12 @@ $user_sql =
 $menu = false;
 if ( $USER->instructor ) {
     $menu = new \Tsugi\UI\MenuSet();
-    if ( U::get($_GET,'viewall') && ! U::get($_GET,'user_id') ) {
-        $menu->addLeft(__('View My Grades'), 'index.php');
-    } else {
-        $menu->addLeft(__('View Student Detail'), 'grades.php');
-    }
+    $menu->addLeft(__('View Student Detail'), $grade_url);
+    $force_url = U::add_url_parm($index_url, "force", "yes");
+    $menu->addRight(__('Force Reload'), $force_url);
 }
+
+$force = U::get($_GET, "force");
 
 // View
 $OUTPUT->header();
@@ -67,12 +70,12 @@ if ( $user_info !== false ) {
 // Table::pagedAuto($user_sql, $query_parms, $searchfields);
 
 // Temporarily make this small since each entry is costly
-$DEFAULT_PAGE_LENGTH = 10;
+$DEFAULT_PAGE_LENGTH = 15;
 $newsql = Table::pagedQuery($user_sql, $query_parms, $searchfields);
-// echo("<pre>\n$newsql\n</pre>\n");
 $rows = $PDOX->allRowsDie($newsql, $query_parms);
 
-// echo("<pre>\n");var_dump($rows);echo("</pre>\n");
+$retrieval_debug = '';
+
 // Scan to see if there are any un-retrieved server grades
 $newrows = array();
 foreach ( $rows as $row ) {
@@ -95,16 +98,22 @@ foreach ( $rows as $row ) {
     // $newrow['note'] = $row['retrieved_at'].' diff='.$diff.' '.
         // $row['server_grade'].' '.$row['sourcedid'].' '.$row['service_key'];
 
-    $RETRIEVE_INTERVAL = 14400; // Four Hours
+    $RETRIEVE_INTERVAL = 3600; // One Hour
     $newnote['note'] = " ".$diff;
 
     $remote_grade = U::get($row,'result_url') || (U::get($row,'sourcedid') && U::get($row,'service'));
 
-    if ( $remote_grade && ( !isset($row['retrieved_at']) || $row['retrieved_at'] < $row['updated_at'] ||
+    $retrieval_debug .= "\n";
+    if ( U::get($row,'result_url') ) $retrieval_debug .= "result_url=".U::get($row,'result_url')."\n";
+    if ( U::get($row,'service') ) $retrieval_debug .= "service=".U::get($row,'service')."\n";
+    if ( U::get($row,'sourcedid') ) $retrieval_debug .= "sourcedid=".U::get($row,'sourcedid')."\n";
+
+    if ( $remote_grade && ( $force || !isset($row['retrieved_at']) || $row['retrieved_at'] < $row['updated_at'] ||
         ! U::get($row, 'server_grade') || U::get($row, 'grade') != U::get($row, 'server_grade') ||
         $diff > $RETRIEVE_INTERVAL ) ) {
 
         $server_grade = LTIX::gradeGet($row);
+        $retrieval_debug .= "Retrieved server grade: ".$server_grade."\n";
         if ( is_string($server_grade) && strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
         if ( is_string($server_grade)) {
             echo('<pre class="alert alert-danger">'."\n");
@@ -122,10 +131,8 @@ foreach ( $rows as $row ) {
             $newrow['note'] = "Problem Retrieving Server Grade: ".$server_grade;
             $newrows[] = $newrow;
             continue;
-        } else if ( $server_grade > 0.0 ) {
-            $newrow['note'] .= ' Server grade retrieved.';
         } else {
-            $newrow['note'] .= ' Server grade checked.';
+            $newrow['note'] .= ' Server grade retrieved: '.$server_grade;
         }
         $row['server_grade'] = $server_grade;
         $newrow['server_grade'] = $server_grade;
@@ -140,10 +147,13 @@ foreach ( $rows as $row ) {
                 "server_grade=".$row['server_grade']." retrieved=".$row['retrieved_at']);
 
         $debug_log = array();
+        $retrieval_debug .= "Sending Tsugi grade: ".$row['grade']."\n";
         $status = LTIX::gradeSend($row['grade'], $row, $debug_log);
+        $retrieval_debug .= "Send status: ".$status."\n";
 
         if ( $status === true ) {
             $server_grade = LTIX::gradeGet($row);
+            $retrieval_debug .= "Re-reteived server grade: ".$server_grade."\n";
             if ( is_string($server_grade) && strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
             $new_row['server_grade'] = $server_grade;
             $row['server_grade'] = $server_grade;
@@ -186,5 +196,11 @@ foreach ( $newrows as $row ) {
 
 $searchfields = array();
 Table::pagedTable($showrows, $searchfields, false);
+
+if ( $LAUNCH->user->instructor ) {
+    echo("<pre>\n");
+    echo(htmlentities($retrieval_debug));
+    echo("</pre>\n");
+}
 
 $OUTPUT->footer();
