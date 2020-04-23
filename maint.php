@@ -85,7 +85,7 @@ if ( isset($_POST['getServerGrades']) ) {
         $ets = sprintf("%1.3f",$et);
         if ( is_string($grade) ) {
             $fail++;
-            $OUTPUT->togglePre("Error at ".$count.' / '.$total.' ('.$ets.')',$grade);
+            $OUTPUT->togglePre("Error at ".$count.' / '.$total.' ('.$ets.')'.' '.$row['service_key'],$grade);
             flush();
         } else {
             $success++;
@@ -216,11 +216,11 @@ function showFrame() {
 $OUTPUT->bodyStart();
 $OUTPUT->flashMessages();
 
-$iframeurl = addSession($CFG->wwwroot . '/mod/grades/maint.php?link_id=' . $link_id);
+$iframeurl = addSession('maint.php?link_id=' . $link_id);
 ?>
 
 <div>
-<form style="display: inline" method="POST" target="my_iframe" action="<?php echo($iframeurl); ?>">
+<form style="display: inline" method="post" target="my_iframe" action="<?php echo($iframeurl); ?>">
   <button name="fixServerGrades" onclick="showFrame();" class="btn btn-warning">Fix Mis-matched Grades</button>
   <button name="getServerGrades" onclick="showFrame();" class="btn btn-warning">Retrieve Server Grades</button>
 </form>
@@ -285,7 +285,7 @@ $UPDATE_INTERVAL = false;
 function updateNumbers() {
     window.console && console.log('Calling updateNumbers');
     $.ajaxSetup({ cache: false }); // For IE...
-    $.getJSON('<?php echo(addSession($CFG->wwwroot.'/mod/grades/maintcount.php?link_id='.$link_id)); ?>',
+    $.getJSON('<?php echo(addSession('maintcount.php?link_id='.$link_id)); ?>',
     function(data) {
         if ( $UPDATE_INTERVAL === false ) $UPDATE_INTERVAL = setInterval(updateNumbers,10000);
         window.console && console.log(data);
@@ -306,5 +306,5 @@ function updateNumbers() {
 }
 updateNumbers();
 </script>
-<?
+<?php
 $OUTPUT->footerEnd();
