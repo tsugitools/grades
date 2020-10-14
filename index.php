@@ -197,7 +197,16 @@ foreach ( $newrows as $row ) {
 $searchfields = array();
 Table::pagedTable($showrows, $searchfields, false);
 
-if ( $LAUNCH->user->instructor ) {
+$identity = __("Logged in as: ").$USER->key;
+if ( strlen($USER->email) > 0 ) {
+    $identity .= ' ' . htmlentities($USER->email);
+}
+if ( strlen($USER->displayname) > 0 ) {
+    $identity .= ' ' . htmlentities($USER->displayname);
+}
+echo("<p>".$identity."</p>");
+
+if ( strlen(trim($retrieval_debug)) > 0 && $LAUNCH->user->instructor ) {
     echo("<pre>\n");
     echo(htmlentities($retrieval_debug));
     echo("</pre>\n");
