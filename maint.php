@@ -132,9 +132,9 @@ if ( isset($_POST['fixServerGrades']) ) {
     $success = 0;
     $fail = 0;
     while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-        echo(htmlentities($row['displayname']));
+        echo(htmlentities($row['displayname'] ?? ''));
         echo(' (');
-        echo(htmlentities($row['email']));
+        echo(htmlentities($row['email'] ?? ''));
         echo(') ');
         echo("local=".$row['grade']." server=".$row['server_grade']);
         echo("<br/>\n");
@@ -251,7 +251,7 @@ will retrieve all grades.</li>
 Context: <?php echo($CONTEXT->id);
     if ( isset($CONTEXT->title) ) echo(' '.htmlentities($CONTEXT->title)) ; ?>
 Link id: <?php echo($link_id);
-    if ( isset($link_info['title']) ) echo(' '.htmlentities($link_info['title'])) ; ?>
+    if ( isset($link_info['title']) ) echo(' '.htmlentities($link_info['title'] ?? '')) ; ?>
 </pre>
 
 <p><b>Total results:</b> <span id="total"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>"></span>
