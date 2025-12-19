@@ -114,7 +114,7 @@ foreach ( $rows as $row ) {
 
         $server_grade = LTIX::gradeGet($row);
         $retrieval_debug .= "Retrieved server grade: ".$server_grade."\n";
-        if ( is_string($server_grade) && strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
+        if ( is_string($server_grade) && U::strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
         if ( is_string($server_grade)) {
             echo('<pre class="alert alert-danger">'."\n");
             $msg = "result_id=".$row['result_id']."\n".
@@ -154,7 +154,7 @@ foreach ( $rows as $row ) {
         if ( $status === true ) {
             $server_grade = LTIX::gradeGet($row);
             $retrieval_debug .= "Re-reteived server grade: ".$server_grade."\n";
-            if ( is_string($server_grade) && strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
+            if ( is_string($server_grade) && U::strlen(trim($server_grade)) == 0 ) $server_grade = 0.0;
             $new_row['server_grade'] = $server_grade;
             $row['server_grade'] = $server_grade;
             if ( $server_grade != $row['grade'] ){
@@ -198,15 +198,15 @@ $searchfields = array();
 Table::pagedTable($showrows, $searchfields, false);
 
 $identity = __("Logged in as: ").$USER->key;
-if ( strlen($USER->email) > 0 ) {
+if ( U::strlen($USER->email) > 0 ) {
     $identity .= ' ' . htmlentities($USER->email);
 }
-if ( strlen($USER->displayname) > 0 ) {
+if ( U::strlen($USER->displayname) > 0 ) {
     $identity .= ' ' . htmlentities($USER->displayname);
 }
 echo("<p>".$identity."</p>");
 
-if ( strlen(trim($retrieval_debug)) > 0 && $LAUNCH->user->instructor ) {
+if ( U::strlen(trim($retrieval_debug)) > 0 && $LAUNCH->user->instructor ) {
     echo("<pre>\n");
     echo(htmlentities($retrieval_debug));
     echo("</pre>\n");
