@@ -79,8 +79,8 @@ $OUTPUT->bodyStart();
 $OUTPUT->topNav($menu);
 $OUTPUT->flashMessages();
 
-echo("<p>Class: ".$CONTEXT->title."</p>\n");
-if ( $link_info ) echo("<p>Link: ".$link_info["title"]."</p>\n");
+echo("<p>Class: ".htmlentities($CONTEXT->title ?? '')."</p>\n");
+if ( $link_info ) echo("<p>Link: ".htmlentities($link_info["title"] ?? '')."</p>\n");
 
 if ( $summary_sql !== false ) {
     Table::pagedAuto($summary_sql, $query_parms, $searchfields, $orderfields, "index.php?detail=yes");

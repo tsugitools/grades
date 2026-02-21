@@ -62,10 +62,10 @@ $OUTPUT->bodyStart();
 $OUTPUT->topNav($menu);
 $OUTPUT->flashMessages();
 
-echo("<p>Class: ".$CONTEXT->title."</p>\n");
+echo("<p>Class: ".htmlentities($CONTEXT->title ?? '')."</p>\n");
 
 if ( $user_info !== false ) {
-    echo("<p>Results for ".$user_info['displayname']."</p>\n");
+    echo("<p>Results for ".htmlentities($user_info['displayname'] ?? '')."</p>\n");
 }
 // Table::pagedAuto($user_sql, $query_parms, $searchfields);
 

@@ -221,17 +221,17 @@ $iframeurl = addSession('maint.php?link_id=' . $link_id);
 
 <div>
 <form style="display: inline" method="post" target="my_iframe" action="<?php echo($iframeurl); ?>">
-  <button name="fixServerGrades" onclick="showFrame();" class="btn btn-warning">Fix Mis-matched Grades</button>
-  <button name="getServerGrades" onclick="showFrame();" class="btn btn-warning">Retrieve Server Grades</button>
+  <button type="submit" name="fixServerGrades" onclick="showFrame();" class="btn btn-warning">Fix Mis-matched Grades</button>
+  <button type="submit" name="getServerGrades" onclick="showFrame();" class="btn btn-warning">Retrieve Server Grades</button>
 </form>
 <form method="post" style="display: inline">
-  <button name="resetServerGrades"
+  <button type="submit" name="resetServerGrades"
     onclick="return confirm('Are you sure you want to clear out all of the previously retrieved server grades?');"
-class="btn btn-danger">Reset Local Server Grades</button>
-  <a href="#" id="clear" style="display: none" onclick="
+    class="btn btn-danger">Reset Local Server Grades</button>
+  <button type="button" id="clear" style="display: none" onclick="
     $('#my_iframe').prop('src', '<?php echo($CFG->wwwroot.'/mod/grades/blank.html'); ?>');return false;"
-    class="btn btn-primary">Clear/Stop Frame</a>
-  <button onclick="window.close();" class="btn btn-primary">Exit</button>
+    class="btn btn-primary" aria-label="Clear or stop the grade retrieval process">Clear/Stop Frame</button>
+  <button type="button" onclick="window.close();" class="btn btn-primary" aria-label="Close this window">Exit</button>
 </div>
 <p>These are maintenance tools make sure you know how to use them.
 <ul>
@@ -239,9 +239,9 @@ class="btn btn-danger">Reset Local Server Grades</button>
 when there is a mismatch between the local grade and our most recent
 server grade.  It is quick unless there are a lot of mis-matches.
 </li>
-<li><b>Retrieve Server Grades</b> calls a web service to pul down a
+<li><b>Retrieve Server Grades</b> calls a web service to pull down a
 copy of the grade stored in the server that have not yet
-been retrieved.  This process takes abut 0.3 seconds per "grade to retrieve".
+been retrieved.  This process takes about 0.3 seconds per "grade to retrieve".
 </li>
 <li><b>Reset Local Server Grades</b> - resets the local
 copies of server grades so that the next <b>Retrieve Server Grades</b>
@@ -254,25 +254,25 @@ Link id: <?php echo($link_id);
     if ( isset($link_info['title']) ) echo(' '.htmlentities($link_info['title'] ?? '')) ; ?>
 </pre>
 
-<p><b>Total results:</b> <span id="total"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>"></span>
-<img id="totspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<p><b>Total results:</b> <span id="total"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="Loading"></span>
+<img id="totspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </p>
-<p><b>Grades to Retrieve:</b> <span id="toretrieve"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>"></span>
-<img id="retspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<p><b>Grades to Retrieve:</b> <span id="toretrieve"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="Loading"></span>
+<img id="retspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </p>
-<p><b>Mis-matched Grades:</b> <span id="mismatch"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>"></span>
-<img id="misspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" style="display:none">
+<p><b>Mis-matched Grades:</b> <span id="mismatch"><img src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="Loading"></span>
+<img id="misspinner" src="<?php echo($OUTPUT->getSpinnerUrl()); ?>" alt="" style="display:none" aria-hidden="true">
 </p>
 
 <div id="iframediv" style="display:none">
 <p>Depending on buffering - output in this iframe may take a while to appear.
 Once the output starts, make sure to scroll to the bottom to see the current activity.
 The number of grades to retrieve will be updated above even if you do
-not see output below.  Is you want to abort this job, press
+not see output below.  If you want to abort this job, press
 "Clear/Stop" and be a little patient.  This job may take so long it times out.
 That is OK - simply come back and restart it - it will pick up where it left off.
 </p>
-<iframe id="my_iframe" width="98%" height="600px" style="border: 1px black solid">
+<iframe id="my_iframe" width="98%" height="600px" style="border: 1px black solid" title="Grade retrieval and fix operations output">
 </iframe>
 </div>
 
