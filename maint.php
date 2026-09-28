@@ -114,8 +114,14 @@ if ( isset($_POST['fixServerGrades']) ) {
     echo("</head><body>\n");
     session_write_close();
 
+    // The grade tool can be updated before Tsugi adds lti_result.comment.
+    if ( $PDOX->columnExists('comment', "{$p}lti_result") ) {
+        $text_column = 'comment';
+    } else {
+        $text_column = 'note';
+    }
     $stmt = $PDOX->queryDie(
-        "SELECT result_id, result_url, link_id, grade, server_grade, comment,
+        "SELECT result_id, result_url, link_id, grade, server_grade, $text_column,
             sourcedid, service_key,
             U.user_id AS user_id, displayname, email
         FROM {$p}lti_result AS R
