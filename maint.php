@@ -115,7 +115,7 @@ if ( isset($_POST['fixServerGrades']) ) {
     session_write_close();
 
     $stmt = $PDOX->queryDie(
-        "SELECT result_id, result_url, link_id, grade, server_grade, note,
+        "SELECT result_id, result_url, link_id, grade, server_grade, comment,
             sourcedid, service_key,
             U.user_id AS user_id, displayname, email
         FROM {$p}lti_result AS R

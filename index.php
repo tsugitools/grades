@@ -35,10 +35,10 @@ if ( $USER->instructor && isset($_GET['user_id']) ) {
 
 // http://stackoverflow.com/questions/5602907/calculate-difference-between-two-datetimes
 $query_parms = array(":UID" => $user_id, ":CID" => $CONTEXT->id);
-$searchfields = array("L.title", "R.grade", "R.note", "R.updated_at", "retrieved_at");
-$orderfields = array("L.title", "R.note", "R.updated_at", "retrieved_at");
+$searchfields = array("L.title", "R.grade", "R.comment", "R.updated_at", "retrieved_at");
+$orderfields = array("L.title", "R.comment", "R.updated_at", "retrieved_at");
 $user_sql =
-    "SELECT R.result_id AS result_id, L.title as title, R.grade AS grade, R.note AS note,
+    "SELECT R.result_id AS result_id, L.title as title, R.grade AS grade, R.comment AS comment,
         R.updated_at as updated_at, server_grade, retrieved_at, sourcedid, result_url, service_key as service,
         TIMESTAMPDIFF(SECOND,retrieved_at,NOW()) as diff_in_seconds, NOW() AS time_now
     FROM {$p}lti_result AS R
