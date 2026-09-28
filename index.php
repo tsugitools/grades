@@ -87,7 +87,7 @@ foreach ( $rows as $row ) {
     unset($newrow['sourcedid']);
     unset($newrow['service']);
     unset($newrow['result_url']);
-    $newrow['note'] = '';
+    $newrow['server_status'] = '';
     if ( $row['grade'] <= 0.0 ) {
         $newrows[] = $newrow;
         continue;
@@ -128,11 +128,11 @@ foreach ( $rows as $row ) {
 
             echo("\nProblem Retrieving Grade - Please take a screen shot of this page.\n");
             echo("</pre>\n");
-            $newrow['note'] = "Problem Retrieving Server Grade: ".$server_grade;
+            $newrow['server_status'] = "Problem Retrieving Server Grade: ".$server_grade;
             $newrows[] = $newrow;
             continue;
         } else {
-            $newrow['note'] .= ' Server grade retrieved: '.$server_grade;
+            $newrow['server_status'] .= ' Server grade retrieved: '.$server_grade;
         }
         $row['server_grade'] = $server_grade;
         $newrow['server_grade'] = $server_grade;
@@ -158,9 +158,9 @@ foreach ( $rows as $row ) {
             $new_row['server_grade'] = $server_grade;
             $row['server_grade'] = $server_grade;
             if ( $server_grade != $row['grade'] ){
-                $newrow['note'] .= " Grade re-send mismatch.";
+                $newrow['server_status'] .= " Grade re-send mismatch.";
             } else {
-                $newrow['note'] .= " Grade re-sent and checked.";
+                $newrow['server_status'] .= " Grade re-sent and checked.";
             }
         } else {
             echo('<pre class="alert alert-danger">'."\n");
@@ -177,7 +177,7 @@ foreach ( $rows as $row ) {
 
             echo("\nProblem Retrieving Grade - Please take a screen shot of this page.\n");
             echo("</pre>\n");
-            $newrow['note'] .= " Problem Updating Server Grade";
+            $newrow['server_status'] .= " Problem Updating Server Grade";
         }
     }
 
